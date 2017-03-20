@@ -4,7 +4,7 @@ from . import app
 
 @app.route("/")
 def index():
-    return render_template("home/default.html")
+    return render_template("home/home.html")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
