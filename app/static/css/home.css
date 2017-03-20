@@ -1,0 +1,43 @@
+.footer-bottom {
+    background-color: #15224f;
+    min-height: 30px;
+    width: 100%;
+}
+.copyright {
+    color: #fff;
+    line-height: 30px;
+    min-height: 30px;
+    padding: 7px 0;
+}
+.design {
+    color: #fff;
+    line-height: 30px;
+    min-height: 30px;
+    padding: 7px 0;
+    text-align: right;
+}
+.design a {
+    color: #fff;
+}
+
+.navbar {
+    margin-bottom: 50px;
+    border-radius: 0;
+}
+
+#logo {
+    padding: 2px;
+    height: 45px;
+    width: 45px;
+}
+
+#title {
+    height: 30px;
+    width: 130px;
+}
+
+#footer{
+    position: relative;
+    width: 100%;
+    margin-bottom: 0px;
+}
