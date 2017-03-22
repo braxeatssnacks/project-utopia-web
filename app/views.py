@@ -3,6 +3,7 @@ from flask import request, render_template,request, session, abort, flash
 from flask_wtf import Form
 from wtforms import StringField, SubmitField, PasswordField, TextField
 from wtforms import validators, ValidationError
+#from model import model as db
 from . import app
 import os 
 
