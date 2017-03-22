@@ -63,7 +63,7 @@ class Students(db.Model):
 		self.id = id
 		self.name = name 
 		self.email = email 
-		sefl.stage_number = stage_number
+		self.stage_number = stage_number
 		self.stage_date_started = stage_date_started
 		self.stage_date_completed = stage_date_completed
 		self.attemps = attemps
