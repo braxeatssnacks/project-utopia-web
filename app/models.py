@@ -1,25 +1,167 @@
-# database modeling
-from . import db
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import create_engine, Column, Integer, String, DateTime,Date, ForeignKey, event, Boolean, Table, UniqueConstraint, ForeignKeyConstraint
+from sqlalchemy.orm import scoped_session, sessionmaker, backref, relationship
+from sqlalchemy.ext.declarative import declarative_base
+import datetime
+import flask
+from flask_login import LoginManager, UserMixin,login_user, login_required
+from . import app
 
-class User(db.Model):
-    # COLUMNS
+#Declare an instance of the Base class for mapping tables
+Base = declarative_base()
+engine = create_engine('postgresql://localhost/project_utopia')
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                     autoflush=False,
+                                     bind=engine))
+Base.query = db_session.query_property()
 
-    """ auto-incrementing unique id """
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    
-    """ first last """
-    name = db.Column(db.String(80), nullable=False)
+class Teachers(Base):
+	__tablename__ = 'teachers'
+	name = Column(String(100),nullable=False)
+	email = Column(String(100),primary_key=True, unique=True, nullable=False)
+	password = Column(String(100),nullable=False)
+	registered_on = Column(DateTime, default=datetime.datetime.utcnow(),nullable=False)
 
-    """ unique identifer """
-    email = db.Column(db.String(80), nullable=False)
 
-    """ hashed password """
-    password = db.Column(db.String(80))
+	def __init__(self, name, email, password,registered_on=None):
+		self.name = name
+		self.email = email
+		self.set_password(password)
+		self.registered_on = datetime.datetime.utcnow()
 
-    def __init__(self, name, email, password):
-        self.name = name
-        self.email = email
-        self.password = hash(password) # TODO: define hash function
+	def __repr__(self):
+		return '<Teacher %r>' % self.name
 
-    def __repr__(self):
-        return "<id ()>".format(self.id)
+	def set_password(self, password):
+		self.password = generate_password_hash(password)
+
+	def check_password(self, password):
+		return check_password_hash(self.password, password)
+
+	def is_authenticated(self):
+		users = Teachers.objects(name=self.name, password=self.password)
+		return len(users) != 0
+
+	def is_active(self):
+		return True
+
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		return (self.email)
+
+login_manager = LoginManager(app)
+
+@login_manager.user_loader
+def load_user_id(email):
+    return Teachers.query.filter(Teachers.email==email).first()
+
+class Classrooms(Base):
+	__tablename__ = 'classrooms'
+	id = Column(String(30),primary_key=True,unique=True)
+	date_created = Column(DateTime, default=datetime.datetime.utcnow(),nullable=False)
+
+	def __init__(self,id,date_created=None):
+		self.id = id
+		self.date_created = datetime.datetime.utcnow()
+
+	def __repr__(self):
+		return '<Classroom %r>' % self.id
+
+class Sections(Base):
+	__tablename__ = 'sections'
+	id = Column(String(20), primary_key=True,unique=True)
+	classroom = Column(String(20), ForeignKey('classrooms.id'),unique=True, primary_key=True, nullable=False)
+	teacher = Column(String(100), ForeignKey('teachers.email'), nullable=False)
+
+	def __init__(self,id,classroom,teacher):
+		self.id = id
+		self.teacher = teacher
+		self.classroom = classroom
+
+	def __repr__(self):
+		return '<Section %r>' % self.id
+
+class Students(Base):
+	__tablename__ = 'students'
+	name = Column(String(100),nullable=False)
+	email = Column(String(100),primary_key=True, unique=True)
+	stage_number = Column(Integer,nullable=False)
+	stage_date_started = Column(Date(),nullable=False)
+	stage_date_completed = Column(Date(),nullable=False)
+	attemps = Column(Integer)
+	code = Column(String(1000))
+
+	def __init__(self,name, email,stage_number,stage_date_started, stage_date_completed,attemps,code):
+		self.name = name
+		self.email = email
+		self.stage_number = stage_number
+		self.stage_date_started = stage_date_started
+		self.stage_date_completed = stage_date_completed
+		self.attemps = attemps
+		self.code = code
+
+	def __repr__(self):
+		return '<Student %r>' % self.name
+
+class Enrolled(Base):
+ 	__tablename__ = 'enrolled'
+ 	student = Column(String(100), ForeignKey('students.email'),primary_key=True,nullable=False)
+ 	section =  Column(String(20),primary_key=True, nullable=False)
+ 	classroom = Column(String(20), primary_key=True,nullable=False)
+ 	ForeignKeyConstraint(['section', 'classroom'], ['section.id', 'section.classroom'])
+
+ 	def __init__(self,student,section,classroom):
+ 		self.student = student
+ 		self.section = section
+ 		self.classroom = classroom
+
+ 	def __repr__(self):
+ 		return '<Enrolled %r>' % self.student
+
+# #Create the table using the metadata attribute of the base class
+# Base.metadata.create_all(engine)
+
+# #Sessions give you access to Transactions, whereby on success you can commit the transaction or rollback one incase you encounter an error’’’
+
+# Session = sessionmaker(bind=engine)
+# session = Session()
+
+
+# #Insert multiple data in this session, similarly you can delete
+# classroom1 = Classrooms(id='comsw4156')
+# classroom2 = Classrooms(id='comsw4111')
+# teacher1 = Teachers(name='Ewan Lowe',email='elowe@cs.columbia.edu',password='comsw4156')
+# teacher2 = Teachers(name='Paul Blaer',email='pblaer@cs.columbia.edu',password='comsw3134')
+# student1 = Students(name='Kofi Fredrick Tam', email='fkt2105@columbia.edu', stage_number=9,
+# 	stage_date_started='03/03/2017',stage_date_completed='04/03/2017',attemps=2,code='Hello, world')
+# student2 = Students(name='Braxton Gunter', email='beg2119@columbia.edu', stage_number=7,
+# 	stage_date_started='03/03/2017',stage_date_completed='04/03/2017',attemps=2,code='Hello, world')
+# student3 = Students(name='Aditi Hudli', email='aah2183@columbia.edu',stage_number=3,
+# 	stage_date_started='03/03/2017',stage_date_completed='04/03/2017',attemps=2,code='Hello, world')
+
+# session.add(classroom1)
+# session.add(classroom2)
+# session.add(teacher1)
+# session.add(teacher2)
+# session.add(student1)
+# session.add(student2)
+# session.add(student3)
+
+# if __name__ == "__main__":
+
+
+# 	try:
+# 		session.commit()
+# 	#You can catch exceptions with  SQLAlchemyError base class
+# 	except SQLAlchemyError as e:
+# 		session.rollback()
+# 		print (str(e))
+# 	#Get data
+# 	for student in session.query(Students).all():
+# 		print ("name of the student is" ,student.name)
+# 		print ("email id of the student is" ,student.email)
+# 	#Close the connection
+# engine.dispose()
