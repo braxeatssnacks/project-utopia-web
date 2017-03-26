@@ -1,0 +1,74 @@
+{% extends "default.html" %}
+{% block title %}Classbox{% endblock %}
+
+{% block header %}
+<!-- dynamic content template for homepage -->
+<div id="header">
+	<!-- Second navbar for categories -->
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<img id="logo" src="{{ url_for('static', filename = 'images/rocket.png')}}" width="50" height="50">
+				<img id="title" src="{{ url_for('static', filename = 'images/project_utopia.png')}}">
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="{{ url_for('index') }}">Home</a></li>
+					<li><a href="#">Classbox</a></li>
+					<li><a href="{{ url_for('logout') }}">Sign Out</a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container -->
+	</nav><!-- /.navbar -->
+</div>
+{% endblock %}
+
+<!-- Homepage -->
+{% block content %} 
+<div class="container">
+	<div class="row row-centered">
+		<div class="col-xs-6 col-md-offset-3">
+			<div class="panel panel-default" id=sign_in>
+				<div class="panel-heading">
+
+					<h1>Welcome {{name}} to your classbox!</h1>      
+					<p> Your class box is your teaching office where you are able to see all the classes you are currently running. Through your classbox, you can manage your classes, student enrollment and monitor student progress in project utopia.</p>
+					<br>
+					<p> You also need to create your first class to add in your classbox. To get started, please create your own classbox and first classroom by filling the form below and let the games begin! </p>
+				</div>
+			</div>     
+
+			<div class="panel-body" >
+
+				<form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+
+					<div class="input-group">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-education"></i></span>
+						{{ form.classbox(class="form-control",placeholder="classbox") }}                                         
+					</div> 
+
+					<div class="input-group">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
+						{{ form.classroom(class="form-control",placeholder="your first class name!") }}                                         
+					</div>                                                                 
+
+					<div class="form-group">
+						<!-- Button -->
+						<div class="col-sm-12 controls">
+							{{ form.submit(class="btn btn-primary pull-right", placeholder="sign up")}}                        
+						</div>
+					</div>
+
+				</form>  
+
+
+
+
+			</div>
+		</div> 
+	</div>
+</div>                    
+</div>        
+{% endblock %}
