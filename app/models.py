@@ -73,7 +73,7 @@ class Classrooms(Base):
 class Sections(Base):
 	__tablename__ = 'sections'
 	id = Column(String(20), primary_key=True,unique=True)
-	classroom = Column(String(20), ForeignKey('classrooms.id'),unique=True, primary_key=True, nullable=False)
+	classroom = Column(String(20), ForeignKey('classrooms.id'),unique=True,nullable=False)
 	teacher = Column(String(100), ForeignKey('teachers.email'), nullable=False)
 
 	def __init__(self,id,classroom,teacher):

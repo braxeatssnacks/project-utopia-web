@@ -33,3 +33,9 @@ class ClassBox(FlaskForm):
 
 	def __init__(self, *args, **kwargs):
 		FlaskForm.__init__(self, *args, **kwargs)
+
+class ClassDataForm(FlaskForm):
+	classroom = TextField('classroom', [validators.Required(), validators.Length(min=4, max=120)])
+	submit = SubmitField("Add")
+	def __init__(self, *args, **kwargs):
+		FlaskForm.__init__(self, *args, **kwargs)
