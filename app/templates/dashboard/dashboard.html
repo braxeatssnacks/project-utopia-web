@@ -1,35 +1,88 @@
 {% extends "default.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}{{name}} Dashboard{% endblock %}
 
 {% block header %}
-    
-    <!-- dynamic content template for homepage -->
-    <div id="header">
-          <!-- Second navbar for categories -->
-        <nav class="navbar navbar-default">
-          <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-              <img id="logo" src="{{ url_for('static', filename = 'images/rocket.png')}}" width="50" height="50">
-              <img id="title" src="{{ url_for('static', filename = 'images/project_utopia.png')}}">
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="navbar-collapse-1">
-              <ul class="nav navbar-nav navbar-right">
-               <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('logout') }}">Sign Out</a></li>
-              </ul>
-            </div><!-- /.navbar-collapse -->
-          </div><!-- /.container -->
-        </nav><!-- /.navbar -->
-    </div>
-    {% endblock %}
+
+<!-- dynamic content template for homepage -->
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <img id="logo" src="{{ url_for('static', filename = 'images/rocket.png')}}" width="50" height="50">
+      <img id="title" src="{{ url_for('static', filename = 'images/project_utopia.png')}}">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>
+       <span class="icon-bar"></span>
+       <span class="icon-bar"></span>
+       <span class="icon-bar"></span>
+
+     </button>
+   </div>
+   <!-- Collect the nav links, forms, and other content for toggling -->
+   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{name}}</a></li>
+      <li><a href="{{ url_for('logout') }}">Sign Out</a></li> 
+    </ul>
+  </div>
+  <!-- /.navbar-collapse -->
+</div>
+<!-- /.container-fluid -->
+</nav>
+{% endblock %}
 
 <!-- Homepage -->
 {% block content %} 
-<div class="container">
-    <div class="row row-centered">
-    <p> Welcome {{ name }} </p>
-    </div>                    
-</div>        
+<div class="container-fluid main-container">
+  <div class="col-md-3 sidebar">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Utopian Instructor Profile
+      </div>
+      <div class="panel-body">
+        <p> <span class="glyphicon glyphicon-user"></span> {{name}} </p>
+        <p> <span class="glyphicon glyphicon-time"></span> Account Created: {{registered_on}} </p>
+        <p> <span class="glyphicon glyphicon-education"></span> Class Box: {{classbox}} </p>
+        <p> <span class="label label-success"> <span class="glyphicon glyphicon-briefcase"></span> Classes Tutoring: {{classnumber}}</span> </p>
+        <p> <span class="label label-success"><span class="glyphicon glyphicon-user"></span> Total Enrolled Students: {{totalenrollment}}</span> </p>
+      </div>
+    </div>
+    <div class="myclasses">
+    <ul class="nav nav-pills nav-stacked">
+      <li class="sidebar active"><a href="#"> Classes <span class="glyphicon glyphicon-book"></span>  </a> </li>
+      {% for row in classroom %}
+      <li><a href="#"> {{row['id']}}</a></li> 
+      {% endfor %} </li>
+    </ul>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Add Class <span class="glyphicon glyphicon--plus-sign"></span> 
+      </div>
+      <form name="form" method="POST" action="/dashboard">
+        <div class="input-group input-group-sm">
+          {{ form.classroom(class="form-control", placeholder="Add Class")}}
+          <div class="input-group-btn">
+            {{ form.submit(class="btn btn-warning", placeholder="Add Class")}}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 content">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Dashboard
+      </div>
+      <div class="panel-body">
+
+      </div>
+    </div>
+  </div> 
+
+</div>       
 {% endblock %}

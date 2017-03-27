@@ -1,5 +1,5 @@
 {% extends "default.html" %}
-{% block title %}Classbox{% endblock %}
+{% block title %} {{name}} Classbox{% endblock %}
 
 {% block header %}
 <!-- dynamic content template for homepage -->
@@ -15,7 +15,7 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="{{ url_for('index') }}">Home</a></li>
+					<li><a href="{{ url_for('index') }}">{{name}} </a></li>
 					<li><a href="#">Classbox</a></li>
 					<li><a href="{{ url_for('logout') }}">Sign Out</a></li>
 				</ul>
@@ -41,13 +41,16 @@
 			</div>     
 
 			<div class="panel-body" >
-
-				<form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
-
+				<form name="form" class="form-horizontal" method="POST" action="/classbox"> 
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-education"></i></span>
 						{{ form.classbox(class="form-control",placeholder="classbox") }}                                         
-					</div> 
+					</div>
+
+					<div class="input-group">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+						{{ form.email(class="form-control",placeholder="classbox") }}                                         
+					</div>  
 
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
@@ -57,15 +60,10 @@
 					<div class="form-group">
 						<!-- Button -->
 						<div class="col-sm-12 controls">
-							{{ form.submit(class="btn btn-primary pull-right", placeholder="sign up")}}                        
+							{{ form.submit(class="btn btn-primary pull-right", placeholder="signup")}}                        
 						</div>
 					</div>
-
 				</form>  
-
-
-
-
 			</div>
 		</div> 
 	</div>

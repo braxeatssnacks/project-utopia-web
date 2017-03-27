@@ -36,6 +36,13 @@
     width: 130px;
 }
 
+.myclasses {
+    height: 170px;
+    overflow-x: auto;
+    overflow-y: auto;
+    background-color: #fff;
+}
+
 #footer{
     position: relative;
     width: 100%;
