@@ -41,13 +41,16 @@
 			</div>     
 
 			<div class="panel-body" >
-
-				<form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST" action="/classbox"> 
-
+				<form name="form" class="form-horizontal" method="POST" action="/classbox"> 
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-education"></i></span>
 						{{ form.classbox(class="form-control",placeholder="classbox") }}                                         
-					</div> 
+					</div>
+
+					<div class="input-group">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+						{{ form.email(class="form-control",placeholder="classbox") }}                                         
+					</div>  
 
 					<div class="input-group">
 						<span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
@@ -57,15 +60,10 @@
 					<div class="form-group">
 						<!-- Button -->
 						<div class="col-sm-12 controls">
-							{{ form.submit(class="btn btn-primary pull-right", placeholder="sign up")}}                        
+							{{ form.submit(class="btn btn-primary pull-right", placeholder="signup")}}                        
 						</div>
 					</div>
-
 				</form>  
-
-
-
-
 			</div>
 		</div> 
 	</div>

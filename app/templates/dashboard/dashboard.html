@@ -49,13 +49,14 @@
         <p> <span class="label label-success"><span class="glyphicon glyphicon-user"></span> Total Enrolled Students: {{totalenrollment}}</span> </p>
       </div>
     </div>
+    <div class="myclasses">
     <ul class="nav nav-pills nav-stacked">
       <li class="sidebar active"><a href="#"> Classes <span class="glyphicon glyphicon-book"></span>  </a> </li>
       {% for row in classroom %}
       <li><a href="#"> {{row['id']}}</a></li> 
       {% endfor %} </li>
-
     </ul>
+    </div>
 
     <div class="panel panel-default">
       <div class="panel-heading">

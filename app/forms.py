@@ -28,6 +28,8 @@ class SignupForm(FlaskForm):
 
 class ClassBox(FlaskForm):
 	classbox = TextField('classbox', [validators.Required(), validators.Length(min=4, max=120)])
+	email = TextField("Email",[validators.Required("Please enter your email address."),
+      validators.Email("Please enter your email address.")])
 	classroom = TextField('classroom', [validators.Required(), validators.Length(min=4, max=120)])
 	submit = SubmitField("Create ClassBox")
 
