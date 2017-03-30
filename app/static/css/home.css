@@ -36,8 +36,14 @@
     width: 130px;
 }
 
+.classdashboard {
+    text-align: center;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 .myclasses {
-    height: 170px;
+    height: 200px;
     overflow-x: auto;
     overflow-y: auto;
     background-color: #fff;

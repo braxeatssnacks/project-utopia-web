@@ -53,11 +53,11 @@
     <ul class="nav nav-pills nav-stacked">
       <li class="sidebar active"><a href="#"> Classes <span class="glyphicon glyphicon-book"></span>  </a> </li>
       {% for row in classroom %}
-      <li><a href="#"> {{row['id']}}</a></li> 
+      <li><a href="{{url_for('classdata', classroom=row.id )}}"> {{row['id']}}</a></li> 
       {% endfor %} </li>
     </ul>
     </div>
-
+    <br>
     <div class="panel panel-default">
       <div class="panel-heading">
         Add Class <span class="glyphicon glyphicon--plus-sign"></span> 
@@ -78,11 +78,37 @@
       <div class="panel-heading">
         Dashboard
       </div>
+      <h4 class=classdashboard> {{classname | upper}} DATA </h4>
       <div class="panel-body">
-
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th> Email</th>
+              <th> Stage On</th>
+              <th> Date Stage Started</th>
+              <th> Date Stage Ended</th>
+              <th> Attempts</th>
+              <th> Code </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in enrolled %}
+            <tr>
+              <td>{{row['email']}}</td>
+              <td>{{row['name']}}</td>
+              <td>{{row['stage_number']}}</td>
+              <td>{{row['stage_date_started']}}</td>
+              <td>{{row['stage_date_completed']}}</td>
+              <td>{{row['attemps']}}</td>
+              <td>{{row['code']}}</td>
+              <td></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div> 
-
 </div>       
 {% endblock %}

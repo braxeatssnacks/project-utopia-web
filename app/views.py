@@ -4,7 +4,7 @@ from flask import request, render_template,request, session, abort, flash, redir
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, TextField
 from wtforms import validators, ValidationError
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.sql import text
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -25,7 +25,9 @@ def index():
 
 @app.route("/logout")
 def logout():
+	session.clear()
 	logout_user()
+
 	return render_template("home/home.html")
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -57,8 +59,9 @@ def login():
 			flash('All fields are required.')
 			return render_template('form/login.html', form = form)
 		else:
+			session['name'] = form.name.data 
+			session['email'] = form.email.data 
 			#data to login
-			print(form.email.data,sys.stderr)
 			user = models.Teachers(name=form.name.data,email=form.email.data, password=form.password.data)
 			if models.db_session.query(models.Sections).filter_by(teacher=user.email).first() == None:
 				classbox = forms.ClassBox(csrf_enabled=False)
@@ -70,13 +73,12 @@ def login():
 				flash('Logged in successfully')
 				name = form.name.data
 				email = form.email.data
-				print(email,sys.stderr)
 				# info to populate dashboard
 				classform = forms.ClassDataForm(csrf_enabled=False) 
 				classbox = models.db_session.query(models.Sections).filter_by(teacher=email).first()
 				sections = models.db_session.query(models.Sections).filter_by(teacher=email)
 				section_numbers = models.db_session.query(models.Sections).filter_by(teacher=email).count()
-				totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).count()
+				totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
 				return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form = classform, name=name,email=email,registered_on=user.registered_on)
 
 @app.route('/classbox', methods=["GET", "POST"])
@@ -98,7 +100,7 @@ def classbox():
 				models.db_session.add(newClassbox)
 				models.db_session.commit()
 
-				email = form.email.data
+				email = session['email']
 				user = models.db_session.query(models.Teachers).filter_by(email=email).first()
 				newClassroom = models.Sections(id=classroom,classroom=classbox,teacher=user.email)
 				models.db_session.add(newClassroom)
@@ -108,7 +110,7 @@ def classbox():
 				classbox = models.db_session.query(models.Sections).filter_by(teacher=user.email).first()
 				sections = models.db_session.query(models.Sections).filter_by(teacher=user.email)
 				section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
-				totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).count()
+				totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
 				return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form = form, name=name,email=email,registered_on=user.registered_on)
 
 @app.route('/dashboard', methods=["GET", "POST"])
@@ -118,19 +120,38 @@ def dashboard():
 	form = forms.ClassDataForm(csrf_enabled=False)
 	# remaining variables
 	name =session['name']
-	user = models.db_session.query(models.Teachers).filter_by(name=name).first()
+	email = session['email']
+	user = models.db_session.query(models.Teachers).filter_by(email=email).first()
 	classbox = models.db_session.query(models.Sections).filter_by(teacher=user.email).first()
 	sections = models.db_session.query(models.Sections).filter_by(teacher=user.email)
 	section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
-	totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).count()
-	
+	totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
 	if form.validate() == False:
 		return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form =form, name=name,email=email,registered_on=user.registered_on)
 	elif form.validate() == True:
 		newclass = models.Sections(id=form.classroom.data, classroom=classbox.classroom,teacher=user.email)
 		models.db_session.add(newclass)
 		models.db_session.commit()
+		section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
 		return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form = form, name=name,email=email,registered_on=user.registered_on)
 
-
-
+@app.route('/classdata/<classroom>')
+@login_required
+def classdata(classroom):
+	if classroom == None:
+		redirect(url_for('dashboard'))
+		return
+	else:
+		form = forms.ClassDataForm(csrf_enabled=False)
+		email = session['email']
+		name = session['name']
+		user = models.db_session.query(models.Teachers).filter_by(email=email).first()
+		classbox = models.db_session.query(models.Sections).filter_by(teacher=user.email).first()
+		sections = models.db_session.query(models.Sections).filter_by(teacher=user.email)
+		section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
+		totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
+		
+		# made query in raw SQL
+		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attemps,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.section =(%s)', classroom)
+		return render_template('dashboard/dashboard.html',enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
+	
