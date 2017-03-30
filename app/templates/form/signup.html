@@ -6,42 +6,41 @@
 <div class="container">
     <div class="row row-centered">
         <div class="col-xs-6 col-md-offset-3">
-        <div class="panel panel-default" id=sign_in>
-            <div class="panel-heading">
-                <div class="panel-title text-center"> Sign Up </div>
-            </div>     
+            <div class="panel panel-default" id=sign_in>
+                <div class="panel-heading">
+                    <div class="panel-title text-center"> Sign Up </div>
+                </div>     
 
-            <div class="panel-body" >
+                <div class="panel-body" >
 
-                <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
-                           
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                {{ form.name(class="form-control",placeholder="username") }}                                         
+                    <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
+                     
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            {{ form.name(class="form-control",placeholder="username") }}                                         
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                            {{ form.email(class="form-control",placeholder="email") }}                                         
+                        </div>
+
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            {{ form.password(class="form-control",placeholder="password") }}  
+                        </div>                                                                  
+
+                        <div class="form-group">
+                            <!-- Button -->
+                            <div class="col-sm-12 controls">
+                                {{ form.submit(class="btn btn-primary pull-right", placeholder="sign up")}}                        
                             </div>
-
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                                {{ form.email(class="form-control",placeholder="email") }}                                         
-                            </div>
-
-
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                {{ form.password(class="form-control",placeholder="password") }}  
-                            </div>                                                                  
-
-                            <div class="form-group">
-                                <!-- Button -->
-                                <div class="col-sm-12 controls">
-                                    {{ form.submit(class="btn btn-primary pull-right", placeholder="sign up")}}                        
-                                </div>
-                            </div>
-
-                </form>   
-            </div>
+                        </div>
+                    </form>   
+                </div>
             </div> 
-         </div>
+        </div>
     </div>                    
 </div> 
 {% endblock %}
