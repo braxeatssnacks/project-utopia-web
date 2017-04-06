@@ -1,7 +1,6 @@
 #!flask/bin/python
 import os
 import unittest
-from . import app, db, models, forms
 from flask import url_for
 from test_base import BaseTestCase
 from .models import Teachers

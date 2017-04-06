@@ -1,18 +1,22 @@
 # flask_testing/test_base.py
 from flask_testing import TestCase
-from models import db
-
 
 class BaseTestCase(TestCase):
-    """A base test case for flask-tracking."""
+	"""A base test case for flask-tracking."""
+	SQLALCHEMY_DATABASE_URI = "postgresql://"
+	TESTING = True
 
-    def create_app(self):
-        app.config.from_object('config.TestConfiguration')
-        return app
+	def create_app(self):
+		app = Flask(__name__)
+		app.config.from_object('config.TestConfiguration')
+		app.config['TESTING'] = True
+		return app
 
-    def setUp(self):
-        db.create_all()
+	def setUp(self):
+		db.create_all()
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+	def tearDown(self):
+		db.session.remove()
+		db.drop_all()
+
+
