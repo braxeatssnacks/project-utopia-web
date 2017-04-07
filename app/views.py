@@ -46,7 +46,7 @@ def signup():
 			models.db_session.commit()
 			name = form.name.data
 			form = forms.LoginForm(csrf_enabled=False)
-			return render_template('form/login.html',form= form,name=name)
+			return redirect(url_for('login'))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
