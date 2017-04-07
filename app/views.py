@@ -44,8 +44,6 @@ def signup():
 			newuser = models.Teachers(form.name.data, form.email.data, form.password.data)
 			models.db_session.add(newuser)
 			models.db_session.commit()
-			name = form.name.data
-			form = forms.LoginForm(csrf_enabled=False)
 			return redirect(url_for('login'))
 
 @app.route("/login", methods=["GET", "POST"])
