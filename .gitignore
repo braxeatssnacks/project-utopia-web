@@ -2,5 +2,12 @@
 __pycache__
 *.pyc
 
+# vagrant
+.vagrant
+Vagrantfile
+
+# IDE
+.idea
+
 # instance configurations
 instance
