@@ -11,3 +11,6 @@ Vagrantfile
 
 # instance configurations
 instance
+
+# bin 
+bin
