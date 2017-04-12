@@ -121,10 +121,10 @@ class Enrolled(Base):
  	def __repr__(self):
  		return '<Enrolled %r>' % self.student
 
-# #Create the table using the metadata attribute of the base class
+# Create the table using the metadata attribute of the base class
 # Base.metadata.create_all(engine)
 
-# #Sessions give you access to Transactions, whereby on success you can commit the transaction or rollback one incase you encounter an error’’’
+# Sessions give you access to Transactions, whereby on success you can commit the transaction or rollback one incase you encounter an error
 
 # Session = sessionmaker(bind=engine)
 # session = Session()
