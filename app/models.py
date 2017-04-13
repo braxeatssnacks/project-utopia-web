@@ -10,10 +10,11 @@ from . import app
 
 #Declare an instance of the Base class for mapping tables
 Base = declarative_base()
-engine = create_engine('postgresql://localhost/project_utopia')
+engine = create_engine('postgresql://postgres:xxxxxx@localhost:5432/projectutopia')
 db_session = scoped_session(sessionmaker(autocommit=False,
                                      autoflush=False,
                                      bind=engine))
+
 Base.query = db_session.query_property()
 
 class Teachers(Base):
@@ -122,7 +123,7 @@ class Enrolled(Base):
  		return '<Enrolled %r>' % self.student
 
 # Create the table using the metadata attribute of the base class
-# Base.metadata.create_all(engine)
+#Base.metadata.create_all(engine)
 
 # Sessions give you access to Transactions, whereby on success you can commit the transaction or rollback one incase you encounter an error
 
