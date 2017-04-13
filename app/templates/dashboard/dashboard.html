@@ -74,6 +74,9 @@
   </div>
 
   <div class="col-md-9 content">
+    {% if error %}
+     <p><strong>Error:</strong> {{ error }} </p>
+    {% endif %}
     <div class="panel panel-default">
       <div class="panel-heading">
         Dashboard
