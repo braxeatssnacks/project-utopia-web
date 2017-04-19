@@ -189,12 +189,14 @@ def update():
 		attemps = data["attemps"]
 		code = data["code"]
 		classbox = data["classbox"]
-		section = data["section"]
+		section_id = data["section_id"]
+		section_name = data["section_name"]
+
 
 		# put students in enrolled table 
-		if models.db_session.query(models.Enrolled).filter_by(student=email, section=section, classroom=classbox ).first() == None:
+		if models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox ).first() == None:
 			#add new user in classroom section instance 
-			newEnrolled = models.Enrolled(email,section, classbox)
+			newEnrolled = models.Enrolled(email,section_id, classbox, section_name)
 			models.db_session.add(newEnrolled)
 			models.db_session.commit()
 
@@ -202,9 +204,9 @@ def update():
 			newStudent = models.Students(name,section, email,stage_number, stage_date_started, stage_date_completed,attemps,code)
 			models.db_session.add(newStudent)
 			models.db_session.commit()
-		elif models.db_session.query(models.Enrolled).filter_by(student=email, section=section, classroom=classbox).first() != None:
+		elif models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox).first() != None:
 			# update stage data 
-			models.db_session.query.filter_by(student=='email',section=section).update({attempts:attemps, stage_number:stage_number, stage_date_started:stage_date_started,\
+			models.db_session.query.filter_by(student=='email',section=section_id).update({attempts:attemps, stage_number:stage_number, stage_date_started:stage_date_started,\
 				stage_date_completed : stage_date_completed, code:code})
 			db.session.commit()
 
