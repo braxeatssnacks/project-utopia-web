@@ -10,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_login import login_user , logout_user , current_user , login_required
 import sys
+import json
+from pprint import pprint
 #from model import model as db
 from . import app, db, models, forms
 
@@ -110,7 +112,7 @@ def classbox():
 
 				email = session['email']
 				user = models.db_session.query(models.Teachers).filter_by(email=email).first()
-				newClassroom = models.Sections(id=classroom,classroom=classbox,teacher=user.email)
+				newClassroom = models.Sections(id=None,name=classroom,classroom=classbox,teacher=user.email)
 				models.db_session.add(newClassroom)
 				models.db_session.commit()
 
@@ -140,11 +142,11 @@ def dashboard():
 	if form.validate() == False:
 		# if class button not filled and button clicked
 		return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form =form, name=name,email=email,registered_on=user.registered_on)
-	elif models.db_session.query(models.Sections).filter_by(id=form.classroom.data).first() != None:
+	elif models.db_session.query(models.Sections).filter_by(name=form.classroom.data).first() != None:
 		error = 'you already have a classroom with that name, pick a new classroom name'
 		return render_template('dashboard/dashboard.html',classroom=sections, error=error, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form =form, name=name,email=email,registered_on=user.registered_on)
-	elif form.validate() == True and models.db_session.query(models.Sections).filter_by(id=form.classroom.data).first() == None:
-		newclass = models.Sections(id=form.classroom.data, classroom=classbox.classroom,teacher=user.email)
+	elif form.validate() == True and models.db_session.query(models.Sections).filter_by(name=form.classroom.data).first() == None:
+		newclass = models.Sections(id=None,name=form.classroom.data, classroom=classbox.classroom,teacher=user.email)
 		models.db_session.add(newclass)
 		models.db_session.commit()
 		section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
@@ -165,8 +167,45 @@ def classdata(classroom):
 		sections = models.db_session.query(models.Sections).filter_by(teacher=user.email)
 		section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
 		totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
-		
+		section_id = models.db_session.query(models.Sections.id).filter_by(name=classroom).first()
 		# made query in raw SQL
-		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attemps,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.section =(%s)', classroom)
+		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attemps,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.classroom = sections.classroom and enrolled.section_name =(%s)', classroom)
 		return render_template('dashboard/dashboard.html',enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
+
+@app.route('/update_stage', methods=["POST"])
+def update():
+	if request.content_type != 'application/json':
+		return jsonify({})
+		try:
+			data = json.loads(request.data)
+		except ValueError:
+			return jsonify({})
+
+		name = data["name"]
+		email = data["email"]
+		stage_number= data["stage_number"]
+		stage_date_started = data["stage_date_started"]
+		stage_date_completed = data["stage_date_completed"]
+		attemps = data["attemps"]
+		code = data["code"]
+		classbox = data["classbox"]
+		section = data["section"]
+
+		# put students in enrolled table 
+		if models.db_session.query(models.Enrolled).filter_by(student=email, section=section, classroom=classbox ).first() == None:
+			#add new user in classroom section instance 
+			newEnrolled = models.Enrolled(email,section, classbox)
+			models.db_session.add(newEnrolled)
+			models.db_session.commit()
+
+			# add current stage data 
+			newStudent = models.Students(name,section, email,stage_number, stage_date_started, stage_date_completed,attemps,code)
+			models.db_session.add(newStudent)
+			models.db_session.commit()
+		elif models.db_session.query(models.Enrolled).filter_by(student=email, section=section, classroom=classbox).first() != None:
+			# update stage data 
+			models.db_session.query.filter_by(student=='email',section=section).update({attempts:attemps, stage_number:stage_number, stage_date_started:stage_date_started,\
+				stage_date_completed : stage_date_completed, code:code})
+			db.session.commit()
+
 	
