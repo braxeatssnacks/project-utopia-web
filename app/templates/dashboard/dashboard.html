@@ -53,7 +53,7 @@
     <ul class="nav nav-pills nav-stacked">
       <li class="sidebar active"><a href="#"> Classes <span class="glyphicon glyphicon-book"></span>  </a> </li>
       {% for row in classroom %}
-      <li><a href="{{url_for('classdata', classroom=row.id )}}"> {{row['id']}}</a></li> 
+      <li><a href="{{url_for('classdata', classroom=row.name )}}"> {{row['name']}}</a></li> 
       {% endfor %} </li>
     </ul>
     </div>
@@ -74,6 +74,9 @@
   </div>
 
   <div class="col-md-9 content">
+    {% if error %}
+     <p><strong>Error:</strong> {{ error }} </p>
+    {% endif %}
     <div class="panel panel-default">
       <div class="panel-heading">
         Dashboard

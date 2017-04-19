@@ -11,6 +11,11 @@
                     <div class="panel-title text-center"> Sign In </div>
                 </div>     
                 <div class="panel-body" >
+
+                    {% if error %}
+                     <p><strong>Error:</strong> {{ error }} </p>
+                    {% endif %}
+                    
                     <form name="form" id="form" class="form-horizontal" enctype="multipart/form-data" method="POST">
                        
                         <div class="input-group">

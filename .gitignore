@@ -2,8 +2,9 @@
 __pycache__
 *.pyc
 
-# vagrant
+# virtual env
 .vagrant
+venv
 Vagrantfile
 
 # IDE
@@ -11,3 +12,8 @@ Vagrantfile
 
 # instance configurations
 instance
+
+# flask wsgi
+flaskapp.wsgi
+
+

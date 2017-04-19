@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import create_engine, Column, Integer, String, DateTime,Date, ForeignKey, event, Boolean, Table, UniqueConstraint, ForeignKeyConstraint
+from sqlalchemy import create_engine, Column,Sequence, Integer, String, DateTime,Date, ForeignKey, event, Boolean, Table, UniqueConstraint, ForeignKeyConstraint
 from sqlalchemy.orm import scoped_session, sessionmaker, backref, relationship
 from sqlalchemy.ext.declarative import declarative_base
 import datetime
@@ -16,6 +16,7 @@ db_session = scoped_session(sessionmaker(autocommit=False,
                                      bind=engine))
 
 Base.query = db_session.query_property()
+SECTION_SEQ = Sequence('user_id_seq')  # define sequence explicitly
 
 class Teachers(Base):
 	__tablename__ = 'teachers'
@@ -73,12 +74,14 @@ class Classrooms(Base):
 
 class Sections(Base):
 	__tablename__ = 'sections'
-	id = Column(String(20), primary_key=True,unique=True)
-	classroom = Column(String(20), ForeignKey('classrooms.id'),unique=True,nullable=False)
+	id = Column(Integer, SECTION_SEQ,primary_key=True,unique=True,server_default=SECTION_SEQ.next_value())
+	name = Column(String(100))
+	classroom = Column(String(1000), ForeignKey('classrooms.id'),nullable=False)
 	teacher = Column(String(100), ForeignKey('teachers.email'), nullable=False)
 
-	def __init__(self,id,classroom,teacher):
+	def __init__(self,id,name,classroom,teacher):
 		self.id = id
+		self.name = name
 		self.teacher = teacher
 		self.classroom = classroom
 
@@ -89,11 +92,13 @@ class Students(Base):
 	__tablename__ = 'students'
 	name = Column(String(100),nullable=False)
 	email = Column(String(100),primary_key=True, unique=True)
+	section = Column(Integer, ForeignKey('sections.id'),primary_key=True, nullable=False)
 	stage_number = Column(Integer,nullable=False)
 	stage_date_started = Column(Date(),nullable=False)
 	stage_date_completed = Column(Date(),nullable=False)
 	attemps = Column(Integer)
 	code = Column(String(1000))
+	#ForeignKeyConstraint(['section'], ['section.id'])
 
 	def __init__(self,name, email,stage_number,stage_date_started, stage_date_completed,attemps,code):
 		self.name = name
@@ -103,6 +108,7 @@ class Students(Base):
 		self.stage_date_completed = stage_date_completed
 		self.attemps = attemps
 		self.code = code
+		self.section = section 
 
 	def __repr__(self):
 		return '<Student %r>' % self.name
@@ -110,22 +116,24 @@ class Students(Base):
 class Enrolled(Base):
  	__tablename__ = 'enrolled'
  	student = Column(String(100), ForeignKey('students.email'),primary_key=True,nullable=False)
- 	section =  Column(String(20),primary_key=True, nullable=False)
- 	classroom = Column(String(20), primary_key=True,nullable=False)
- 	ForeignKeyConstraint(['section', 'classroom'], ['section.id', 'section.classroom'])
+ 	section =  Column(String(100),primary_key=True, nullable=False)
+ 	classroom = Column(String(100), primary_key=True,nullable=False)
+ 	section_name = Column(String(100), nullable=False)
+ 	ForeignKeyConstraint(['section', 'classroom','section_name'], ['section.id', 'section.classroom','section_name'])
 
- 	def __init__(self,student,section,classroom):
+ 	def __init__(self,student,section,classroom, section_name):
  		self.student = student
  		self.section = section
  		self.classroom = classroom
+ 		self.section_name = section_name
 
  	def __repr__(self):
  		return '<Enrolled %r>' % self.student
 
-# Create the table using the metadata attribute of the base class
-#Base.metadata.create_all(engine)
+#Create the table using the metadata attribute of the base class
+# Base.metadata.create_all(engine)
 
-# Sessions give you access to Transactions, whereby on success you can commit the transaction or rollback one incase you encounter an error
+#Sessions give you access to Transactions, whereby on success you can commit the transaction or rollback one incase you encounter an error’’’
 
 # Session = sessionmaker(bind=engine)
 # session = Session()
