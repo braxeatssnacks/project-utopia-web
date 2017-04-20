@@ -169,7 +169,7 @@ def classdata(classroom):
 		totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
 		section_id = models.db_session.query(models.Sections.id).filter_by(name=classroom).first()
 		# made query in raw SQL
-		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attemps,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.classroom = sections.classroom and enrolled.section_name =(%s)', classroom)
+		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attempts,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.classroom = sections.classroom and enrolled.section_name =(%s)', classroom)
 		return render_template('dashboard/dashboard.html',enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
 
 @app.route('/update_stage', methods=["POST"])
@@ -186,7 +186,7 @@ def update():
 		stage_number= data["stage_number"]
 		stage_date_started = data["stage_date_started"]
 		stage_date_completed = data["stage_date_completed"]
-		attemps = data["attemps"]
+		attempts = data["attempts"]
 		code = data["code"]
 		classbox = data["classbox"]
 		section_id = data["section_id"]
@@ -201,12 +201,12 @@ def update():
 			models.db_session.commit()
 
 			# add current stage data 
-			newStudent = models.Students(name,section, email,stage_number, stage_date_started, stage_date_completed,attemps,code)
+			newStudent = models.Students(name,section, email,stage_number, stage_date_started, stage_date_completed,attempts,code)
 			models.db_session.add(newStudent)
 			models.db_session.commit()
 		elif models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox).first() != None:
 			# update stage data 
-			models.db_session.query.filter_by(student=='email',section=section_id).update({attempts:attemps, stage_number:stage_number, stage_date_started:stage_date_started,\
+			models.db_session.query.filter_by(student=='email',section=section_id).update({ attempts:attempts, stage_number:stage_number, stage_date_started:stage_date_started,\
 				stage_date_completed : stage_date_completed, code:code})
 			db.session.commit()
 

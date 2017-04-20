@@ -96,17 +96,17 @@ class Students(Base):
 	stage_number = Column(Integer,nullable=False)
 	stage_date_started = Column(Date(),nullable=False)
 	stage_date_completed = Column(Date(),nullable=False)
-	attemps = Column(Integer)
+	attempts = Column(Integer)
 	code = Column(String(1000))
 	#ForeignKeyConstraint(['section'], ['section.id'])
 
-	def __init__(self,name, email,stage_number,stage_date_started, stage_date_completed,attemps,code):
+	def __init__(self,name, email,stage_number,stage_date_started, stage_date_completed,attempts,code):
 		self.name = name
 		self.email = email
 		self.stage_number = stage_number
 		self.stage_date_started = stage_date_started
 		self.stage_date_completed = stage_date_completed
-		self.attemps = attemps
+		self.attempts = attempts
 		self.code = code
 		self.section = section 
 
@@ -172,5 +172,5 @@ class Enrolled(Base):
 # 	for student in session.query(Students).all():
 # 		print ("name of the student is" ,student.name)
 # 		print ("email id of the student is" ,student.email)
-# 	#Close the connection
+# 	# Close the connection
 # engine.dispose()
