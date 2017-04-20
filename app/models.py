@@ -100,7 +100,7 @@ class Students(Base):
 	code = Column(String(1000))
 	#ForeignKeyConstraint(['section'], ['section.id'])
 
-	def __init__(self,name, email,stage_number,stage_date_started, stage_date_completed,attempts,code):
+	def __init__(self, name, email, stage_number, stage_date_started, stage_date_completed, attempts, code, section):
 		self.name = name
 		self.email = email
 		self.stage_number = stage_number

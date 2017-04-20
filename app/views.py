@@ -1,17 +1,17 @@
 # definition of routes
 from __future__ import print_function # In python 2.7
-from flask import request, render_template,request, session, abort, flash, redirect, url_for
-from flask_wtf import FlaskForm
+from flask import request, render_template,request, session, abort, flash, redirect, url_for, jsonify 
+from flask_wtf import FlaskForm 
 from wtforms import StringField, SubmitField, PasswordField, TextField
 from wtforms import validators, ValidationError
-from sqlalchemy import create_engine, and_
-from sqlalchemy.sql import text
+from sqlalchemy import create_engine, text
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_login import login_user , logout_user , current_user , login_required
 import sys
 import json
 from pprint import pprint
+from flask_cors import cross_origin
 #from model import model as db
 from . import app, db, models, forms
 
@@ -173,41 +173,48 @@ def classdata(classroom):
 		return render_template('dashboard/dashboard.html',enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
 
 @app.route('/update_stage', methods=["POST"])
+@cross_origin(["POST"])
 def update():
 	if request.content_type != 'application/json':
-		return jsonify({})
-		try:
-			data = json.loads(request.data)
-		except ValueError:
-			return jsonify({})
+		return jsonify({"error": "format application/json"})
+	# is json
+	try:
+		data = json.loads(request.data.decode('UTF-8'))
+	except ValueError:
+		return jsonify({"error": "value error"})
 
-		name = data["name"]
-		email = data["email"]
-		stage_number= data["stage_number"]
-		stage_date_started = data["stage_date_started"]
-		stage_date_completed = data["stage_date_completed"]
-		attempts = data["attempts"]
-		code = data["code"]
-		classbox = data["classbox"]
-		section_id = data["section_id"]
-		section_name = data["section_name"]
+	# get POST params
+	name = data["name"]
+	email = data["email"]
+	stage_number= data["stage_number"]
+	stage_date_started = data["stage_date_started"]
+	stage_date_completed = data["stage_date_completed"]
+	attempts = data["attempts"]
+	code = data["code"]
+	classbox = data["classbox"]
+	section_id = data["section_id"]
+	section_name = data["section_name"]
 
+	# PUT STUDETNS IN TABLE 
+	# not yet in table
+	if models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox ).first() == None:
+		# add current stage data 
+		newStudent = models.Students(name, email, stage_number, stage_date_started, stage_date_completed, attempts, code, section_id)
+		models.db_session.add(newStudent)
+		models.db_session.commit()
 
-		# put students in enrolled table 
-		if models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox ).first() == None:
-			#add new user in classroom section instance 
-			newEnrolled = models.Enrolled(email,section_id, classbox, section_name)
-			models.db_session.add(newEnrolled)
-			models.db_session.commit()
+		#add new user in classroom section instance 
+		newEnrolled = models.Enrolled(email, section_id, classbox, section_name)
+		models.db_session.add(newEnrolled)
+		models.db_session.commit()
 
-			# add current stage data 
-			newStudent = models.Students(name,section, email,stage_number, stage_date_started, stage_date_completed,attempts,code)
-			models.db_session.add(newStudent)
-			models.db_session.commit()
-		elif models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox).first() != None:
-			# update stage data 
-			models.db_session.query.filter_by(student=='email',section=section_id).update({ attempts:attempts, stage_number:stage_number, stage_date_started:stage_date_started,\
-				stage_date_completed : stage_date_completed, code:code})
-			db.session.commit()
+	# already in table
+	else:
+		# update stage data 
+		models.db_session.query.filter_by(student=='email', section=section_id).update({ attempts:attempts, stage_number:stage_number, stage_date_started:stage_date_started,
+			stage_date_completed : stage_date_completed, code:code})
+		db.session.commit()
+
+	return jsonify({ "success": True })
 
 	
