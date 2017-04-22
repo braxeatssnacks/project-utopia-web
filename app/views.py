@@ -14,6 +14,8 @@ from pprint import pprint
 from flask_cors import cross_origin
 #from model import model as db
 from . import app, db, models, forms
+import string
+import re
 
 #Create a DBAPI connection
 engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
@@ -167,10 +169,12 @@ def classdata(classroom):
 		sections = models.db_session.query(models.Sections).filter_by(teacher=user.email)
 		section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
 		totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
-		section_id = models.db_session.query(models.Sections.id).filter_by(name=classroom).first()
+		section_info = models.db_session.query(models.Sections.id).filter_by(name=classroom).first()
+		section_id = section_info.id
+		section_count = models.db_session.query(models.Enrolled).filter_by(section=str(section_id)).count()
 		# made query in raw SQL
 		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attempts,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.classroom = sections.classroom and enrolled.section_name =(%s)', classroom)
-		return render_template('dashboard/dashboard.html',enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
+		return render_template('dashboard/dashboard.html', section_enrollment =section_count, enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
 
 @app.route('/update_stage', methods=["POST"])
 @cross_origin(["POST"])
@@ -191,14 +195,15 @@ def update():
 	stage_date_completed = data["stage_date_completed"]
 	attempts = data["attempts"]
 	code = data["code"]
-	classbox = data["classbox"]
 	section_id = data["section_id"]
-	section_name = data["section_name"]
 
 	# PUT STUDETNS IN TABLE 
 	# not yet in table
-	if models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id, classroom=classbox ).first() == None:
+	if models.db_session.query(models.Enrolled).filter_by(student=email, section=section_id).first() == None:
 		# add current stage data 
+		section = models.db_session.query(models.Sections).filter_by(id=section_id).first()
+		section_name = section.name
+		classbox = section.classroom
 		newStudent = models.Students(name, email, stage_number, stage_date_started, stage_date_completed, attempts, code, section_id)
 		models.db_session.add(newStudent)
 		models.db_session.commit()
