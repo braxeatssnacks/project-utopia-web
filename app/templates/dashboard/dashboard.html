@@ -35,15 +35,14 @@
 <!-- Homepage -->
 {% block content %} 
 <div class="container-fluid main-container">
-  <div class="col-md-4 sidebar">
+  <div class="col-md-3 sidebar">
 
     <div class="panel panel-default">
       <div class="panel-heading">
         Utopian Instructor Profile
       </div>
       <div class="panel-body">
-        <p> <span class="glyphicon glyphicon-user"></span> {{name}} </p>
-        <p> <span class="glyphicon glyphicon-time"></span> Account Created: {{registered_on}} </p>
+      <p> <span class="glyphicon glyphicon-user"></span> {{name}} </p>
         <p> <span class="glyphicon glyphicon-education"></span> Class Box: {{classbox}} </p>
         <p> <span class="label label-success"> <span class="glyphicon glyphicon-briefcase"></span> Classes Tutoring: {{classnumber}}</span> </p>
         <p> <span class="label label-success"><span class="glyphicon glyphicon-user"></span> Total Enrolled Students: {{totalenrollment}}</span> </p>
@@ -73,7 +72,7 @@
     </div>
   </div>
 
-  <div class="col-md-8 content">
+  <div class="col-md-9 content">
     {% if error %}
      <p><strong>Error:</strong> {{ error }} </p>
     {% endif %}
