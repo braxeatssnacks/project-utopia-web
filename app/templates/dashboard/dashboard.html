@@ -81,13 +81,13 @@
         <span class="glyphicon glyphicon-dashboard"> Dashboard
       </div>
       <h4 class=classdashboard> {{classname | upper}} DATA </h4>
-      <div class="panel-body">
+      <div class="panel-body data_size">
           <p><span class="glyphicon glyphicon-paste"> Enrollment: {{section_enrollment}}</p>
           <hr>
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>Student Name</th>
+              <th> Student Name</th>
               <th> Email</th>
               <th> Stage On</th>
               <th> Date Stage Started</th>
@@ -99,37 +99,37 @@
           <tbody>
             {% for row in enrolled %}
             <tr>
-              <td>{{row['email']}}</td>
               <td>{{row['name']}}</td>
+              <td>{{row['email']}}</td>
               <td>{{row['stage_number']}}</td>
               <td>{{row['stage_date_started']}}</td>
               <td>{{row['stage_date_completed']}}</td>
               <td>{{row['attempts']}}</td>
-              <td>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-edit"> Code</button>
-                <!-- Modal -->
-                <div class="modal fade panel-heading" id="myModal" role="dialog">
+              <td> 
+               <button type="button" class="btn btn-default" data-toggle="modal" data-target="{{ "#myModal" ~ row.name ~ row.stage_number ~ stage_date_started ~ stage_date_completed }}"><span class="glyphicon glyphicon-edit">Code </button>
+
+                 <div class="modal fade panel-heading" id="{{ "myModal" ~ row.name ~ row.stage_number ~ stage_date_started ~ stage_date_completed }}" role="dialog">
                   <div class="modal-dialog">
-                  
                     <!-- Modal content-->
                     <div class="modal-content">
+
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"><span class="glyphicon glyphicon-qrcode"> {{row['name']}}'s Code <span class="glyphicon glyphicon-qrcode"> </h4>
+                        <h4 class="modal-title"><span class="glyphicon glyphicon-qrcode"> {{row['name']}}'s Code <span class="glyphicon glyphicon-qrcode"></h4>
                       </div>
+
                       <div class="modal-body">
-                        <p>{{row['code']}}</p>
+                        <p> {{row['code']}} </p>
                       </div>
-                      <div class="modal-footer panel-heading">
+
+                      <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                       </div>
+
                     </div>
-                    
                   </div>
                 </div>
-
               </td>
-              <td></td>
             </tr>
             {% endfor %}
           </tbody>

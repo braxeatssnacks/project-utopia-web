@@ -1,4 +1,8 @@
-body {
+html {
+    overflow-y: auto;
+}
+
+.data_size {
     overflow-y: auto;
 }
 .footer-bottom {
