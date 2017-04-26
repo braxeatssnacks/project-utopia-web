@@ -14,8 +14,7 @@ from pprint import pprint
 from flask_cors import cross_origin
 #from model import model as db
 from . import app, db, models, forms
-import string
-import re
+import datetime
 
 #Create a DBAPI connection
 engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
@@ -124,7 +123,7 @@ def classbox():
 				sections = models.db_session.query(models.Sections).filter_by(teacher=user.email)
 				section_numbers = models.db_session.query(models.Sections).filter_by(teacher=user.email).count()
 				totalenrollment = models.db_session.query(models.Enrolled).distinct(models.Enrolled.student, models.Enrolled.classroom).filter_by(classroom=classbox.classroom).count()
-				return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form = classform, name=name,email=email,registered_on=user.registered_on)
+				return render_template('dashboard/dashboard.html',classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form = classform, name=name,email=email,registered_on=user.registered_on.strftime('%Y-%m-%d'))
 
 @app.route('/dashboard', methods=["GET", "POST"])
 @login_required
