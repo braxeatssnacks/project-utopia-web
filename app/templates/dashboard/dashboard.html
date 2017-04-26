@@ -79,11 +79,12 @@
     {% endif %}
     <div class="panel panel-default">
       <div class="panel-heading">
-        Dashboard
+        <span class="glyphicon glyphicon-dashboard"> Dashboard
       </div>
       <h4 class=classdashboard> {{classname | upper}} DATA </h4>
       <div class="panel-body">
-          <p> Current {{classname}} enrollment: {{section_enrollment}} </p>
+          <p><span class="glyphicon glyphicon-paste"> Enrollment: {{section_enrollment}}</p>
+          <hr>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -104,8 +105,31 @@
               <td>{{row['stage_number']}}</td>
               <td>{{row['stage_date_started']}}</td>
               <td>{{row['stage_date_completed']}}</td>
-              <td>{{row['attemps']}}</td>
-              <td>{{row['code']}}</td>
+              <td>{{row['attempts']}}</td>
+              <td>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-edit"> View Code</button>
+                <!-- Modal -->
+                <div class="modal fade panel-heading" id="myModal" role="dialog">
+                  <div class="modal-dialog">
+                  
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"><span class="glyphicon glyphicon-qrcode"> {{row['name']}}'s Code <span class="glyphicon glyphicon-qrcode"> </h4>
+                      </div>
+                      <div class="modal-body">
+                        <p>{{row['code']}}</p>
+                      </div>
+                      <div class="modal-footer panel-heading">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+
+              </td>
               <td></td>
             </tr>
             {% endfor %}
