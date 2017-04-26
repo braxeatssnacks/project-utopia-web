@@ -35,7 +35,7 @@
 <!-- Homepage -->
 {% block content %} 
 <div class="container-fluid main-container">
-  <div class="col-md-3 sidebar">
+  <div class="col-md-4 sidebar">
 
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -73,7 +73,7 @@
     </div>
   </div>
 
-  <div class="col-md-9 content">
+  <div class="col-md-8 content">
     {% if error %}
      <p><strong>Error:</strong> {{ error }} </p>
     {% endif %}
@@ -107,7 +107,7 @@
               <td>{{row['stage_date_completed']}}</td>
               <td>{{row['attempts']}}</td>
               <td>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-edit"> View Code</button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-edit"> Code</button>
                 <!-- Modal -->
                 <div class="modal fade panel-heading" id="myModal" role="dialog">
                   <div class="modal-dialog">

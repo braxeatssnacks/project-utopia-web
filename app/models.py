@@ -23,14 +23,14 @@ class Teachers(Base):
 	name = Column(String(100),nullable=False)
 	email = Column(String(100),primary_key=True, unique=True, nullable=False)
 	password = Column(String(100),nullable=False)
-	registered_on = Column(DateTime, default=datetime.datetime.utcnow(),nullable=False)
+	registered_on = Column(Date, default=datetime.datetime.utcnow().strftime("%Y-%m-%d"),nullable=False)
 
 
 	def __init__(self, name, email, password,registered_on=None):
 		self.name = name
 		self.email = email
 		self.set_password(password)
-		self.registered_on = datetime.datetime.utcnow()
+		self.registered_on = datetime.datetime.utcnow().strftime("%Y-%m-%d")
 
 	def __repr__(self):
 		return '<Teacher %r>' % self.name
