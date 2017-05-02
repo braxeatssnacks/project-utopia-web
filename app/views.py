@@ -173,7 +173,7 @@ def classdata(classroom):
 		section_count = models.db_session.query(models.Enrolled).filter_by(section=str(section_id)).count()
 		# made query in raw SQL
 		enrolled = db.engine.execute('select distinct(students.email) ,students.name,students.stage_number,students.stage_date_started,students.stage_date_completed,students.attempts,students.code from students, enrolled,sections where students.email = enrolled.student and enrolled.classroom = sections.classroom and enrolled.section_name =(%s)', classroom)
-		return render_template('dashboard/dashboard.html', section_enrollment =section_count, enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
+		return render_template('dashboard/dashboard.html', id = section_id, section_enrollment =section_count, enrolled=enrolled,classname=classroom, classroom=sections, classnumber=section_numbers, totalenrollment=totalenrollment,classbox=classbox.classroom, form=form, name=name,email=email,registered_on=user.registered_on)
 
 @app.route('/update_stage', methods=["POST"])
 @cross_origin(["POST"])
