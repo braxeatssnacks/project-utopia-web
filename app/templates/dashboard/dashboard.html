@@ -82,7 +82,11 @@
       </div>
       <h4 class=classdashboard> {{classname | upper}} DATA </h4>
       <div class="panel-body data_size">
+          {% if id %}
+          <p><span class="glyphicon glyphicon-paste"> ID: {{ id }}, Enrollment: {{section_enrollment}}</p>
+          {% else %}
           <p><span class="glyphicon glyphicon-paste"> Enrollment: {{section_enrollment}}</p>
+          {% endif %}
           <hr>
         <table class="table table-striped">
           <thead>
