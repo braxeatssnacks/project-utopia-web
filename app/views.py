@@ -215,8 +215,7 @@ def update():
 	# already in table
 	else:
 		# update stage data 
-		models.db_session.query(models.Students).filter_by(email=email, section=section_id).update({ attempts:attempts, stage_number:stage_number, stage_date_started:stage_date_started,
-			stage_date_completed : stage_date_completed, code:code})
+		models.db_session.query(models.Students).filter_by(email=email, section=section_id).update({ 'attempts':attempts,'stage_number': stage_number,'stage_date_started':stage_date_started, 'stage_date_completed': stage_date_completed, 'code':code})
 		db.session.commit()
 
 	return jsonify({ "success": True })
