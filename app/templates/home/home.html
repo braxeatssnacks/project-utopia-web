@@ -4,7 +4,20 @@
 <!-- Homepage -->
 {% block content %} 
 <div class="container">
-    <div class="row row-centered">
-    </div>                    
-</div>        
+	<div class="row row-centered">
+		<div class="col-xs-8 col-md-offset-2">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4> <center>Welcome to project utopia! <center></h4>      
+				</div>
+			</div>     
+
+			<div class="panel-body" >
+			 <img src="{{ url_for('static', filename = 'images/games.png')}}" width="700" height="370">	 
+			</div>
+		<p> Create classrooms where you can  manage students and track the progress they make throughout our awesome coding tutorial. Start today and create an unlimited number of classes! </p>
+		</div> 
+	</div>
+</div>                    
+</div>            
 {% endblock %}
